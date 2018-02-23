@@ -7,8 +7,8 @@ android:layout_height="match_parent"
 tools:context="com.example.dizzer.testtaskprojectb.activity.MainActivity">
 
 <ImageView
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     android:id="@+id/iv_main_activity"/>
 
 </android.support.constraint.ConstraintLayout>
