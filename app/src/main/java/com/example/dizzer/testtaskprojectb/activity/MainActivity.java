@@ -1,13 +1,16 @@
 package com.example.dizzer.testtaskprojectb.activity;
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Intent;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.example.dizzer.testtaskprojectb.R;
+import com.example.dizzer.testtaskprojectb.constants.ConstantsForDB;
 import com.example.dizzer.testtaskprojectb.constants.CustomConstants;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -21,11 +24,13 @@ public class MainActivity extends AppCompatActivity {
     private ImageView imageView;
     private String imageLink;
     private int statusForLink = CustomConstants.STATUS_UNKNOWN;
+    private long imageTime = System.currentTimeMillis();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        grantUriPermission(ConstantsForDB.CONTENT_AUTHORITY,ConstantsForDB.CONTENT_URI_IMAGES,Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
         imageView = (ImageView) findViewById(R.id.iv_main_activity);
 
@@ -45,24 +50,29 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void showImage(){
+    private void showImage() {
         Picasso.with(MainActivity.this).load(imageLink).into(imageView, new Callback() {
             @Override
             public void onSuccess() {
                 statusForLink = CustomConstants.STATUS_DOWNLOADED;
-                saveLink();
+                saveLink(statusForLink);
             }
 
             @Override
             public void onError() {
                 statusForLink = CustomConstants.STATUS_ERROR;
-                saveLink();
+                saveLink(statusForLink);
             }
         });
     }
 
-    private void saveLink() {
-        //TODO Realize save to DB
+    private void saveLink(int statusForLink) {
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ConstantsForDB.IMAGE_LINK, imageLink);
+        contentValues.put(ConstantsForDB.IMAGE_STATUS, statusForLink);
+        contentValues.put(ConstantsForDB.IMAGE_TIME, imageTime);
+        getContentResolver().insert(ConstantsForDB.CONTENT_URI_IMAGES,contentValues);
+        Toast.makeText(MainActivity.this,getString(R.string.link_saved_main_activity),Toast.LENGTH_SHORT).show();
     }
 
     private void closeApp() {

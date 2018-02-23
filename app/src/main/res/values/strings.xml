@@ -3,4 +3,5 @@
     <string name="main_activity_massage">Sorry, but this application is not a stand-alone application. It will close after</string>
     <string name="main_activity_seconds_text">seconds</string>
     <string name="title_for_dialog">Application B</string>
+    <string name="link_saved_main_activity">Link Saved</string>
 </resources>

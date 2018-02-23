@@ -14,8 +14,8 @@ public class ConstantsForDB {
 
     private static final String IMAGE_TABLE_NAME = "images";
 
-    private static final String IMAGE_ID = "_id";
-    private static final String IMAGE_LINK = "link";
-    private static final String IMAGE_STATUS = "status";
-    private static final String IMAGE_TIME = "time";
+    public static final String IMAGE_ID = "_id";
+    public static final String IMAGE_LINK = "link";
+    public static final String IMAGE_STATUS = "status";
+    public static final String IMAGE_TIME = "time";
 }
