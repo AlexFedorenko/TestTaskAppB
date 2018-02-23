@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">Test Task Project B</string>
+    <string name="main_activity_massage">Sorry, but this application is not a stand-alone application. It will close after</string>
+    <string name="main_activity_seconds_text">seconds</string>
+    <string name="title_for_dialog">Application B</string>
 </resources>
