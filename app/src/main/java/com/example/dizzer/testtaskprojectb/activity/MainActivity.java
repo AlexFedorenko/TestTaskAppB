@@ -23,6 +23,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ImageView imageView;
     private String imageLink;
+    private long id;
     private int statusForLink = CustomConstants.STATUS_UNKNOWN;
     private long imageTime = System.currentTimeMillis();
 
@@ -30,40 +31,57 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        grantUriPermission(ConstantsForDB.CONTENT_AUTHORITY,ConstantsForDB.CONTENT_URI_IMAGES,Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+        grantUriPermission(ConstantsForDB.CONTENT_AUTHORITY, ConstantsForDB.CONTENT_URI_IMAGES, Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
 
         imageView = (ImageView) findViewById(R.id.iv_main_activity);
 
         incomeIntent = getIntent();
         followedIntent = incomeIntent.getIntExtra(CustomConstants.INTENT_CODE, CustomConstants.LAUNCHER);
         imageLink = incomeIntent.getStringExtra(CustomConstants.INTENT_LINK);
+        id = incomeIntent.getLongExtra(CustomConstants.INTENT_ID, 0);
+
+        showImage();
+    }
+
+    private void showImage() {
 
         switch (followedIntent) {
             case CustomConstants.LAUNCHER:
                 closeApp();
                 break;
             case CustomConstants.TEST_FRAGMENT:
-                showImage();
+                Picasso.with(MainActivity.this).load(imageLink).into(imageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        statusForLink = CustomConstants.STATUS_DOWNLOADED;
+                        saveLink(statusForLink);
+                    }
+
+                    @Override
+                    public void onError() {
+                        statusForLink = CustomConstants.STATUS_ERROR;
+                        saveLink(statusForLink);
+                    }
+                });
                 break;
             case CustomConstants.HISTORY_FRAGMENT:
+                Picasso.with(MainActivity.this).load(imageLink).into(imageView, new Callback() {
+                    @Override
+                    public void onSuccess() {
+                        statusForLink = CustomConstants.STATUS_DOWNLOADED;
+                        saveImage();
+                        deleteLink(id);
+                    }
+
+                    @Override
+                    public void onError() {
+                        statusForLink = CustomConstants.STATUS_ERROR;
+                        updateLink();
+                    }
+                });
                 break;
         }
-    }
 
-    private void showImage() {
-        Picasso.with(MainActivity.this).load(imageLink).into(imageView, new Callback() {
-            @Override
-            public void onSuccess() {
-                statusForLink = CustomConstants.STATUS_DOWNLOADED;
-                saveLink(statusForLink);
-            }
-
-            @Override
-            public void onError() {
-                statusForLink = CustomConstants.STATUS_ERROR;
-                saveLink(statusForLink);
-            }
-        });
     }
 
     private void saveLink(int statusForLink) {
@@ -71,8 +89,20 @@ public class MainActivity extends AppCompatActivity {
         contentValues.put(ConstantsForDB.IMAGE_LINK, imageLink);
         contentValues.put(ConstantsForDB.IMAGE_STATUS, statusForLink);
         contentValues.put(ConstantsForDB.IMAGE_TIME, imageTime);
-        getContentResolver().insert(ConstantsForDB.CONTENT_URI_IMAGES,contentValues);
-        Toast.makeText(MainActivity.this,getString(R.string.link_saved_main_activity),Toast.LENGTH_SHORT).show();
+        getContentResolver().insert(ConstantsForDB.CONTENT_URI_IMAGES, contentValues);
+        Toast.makeText(MainActivity.this, getString(R.string.link_saved_main_activity), Toast.LENGTH_SHORT).show();
+    }
+
+    private void saveImage() {
+
+    }
+
+    private void updateLink() {
+
+    }
+
+    private void deleteLink(long id) {
+        getContentResolver().delete(ConstantsForDB.CONTENT_URI_IMAGES, "_id = " + id, null);
     }
 
     private void closeApp() {
