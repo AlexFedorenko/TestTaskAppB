@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private String imageLink;
     private long id;
     private int statusForLink = CustomConstants.STATUS_UNKNOWN;
+    private int oldStatusForLink;
     private long imageTime = System.currentTimeMillis();
 
     @Override
@@ -47,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
         followedIntent = incomeIntent.getIntExtra(CustomConstants.INTENT_CODE, CustomConstants.LAUNCHER);
         imageLink = incomeIntent.getStringExtra(CustomConstants.INTENT_LINK);
         id = incomeIntent.getLongExtra(CustomConstants.INTENT_ID, 0);
+        oldStatusForLink = incomeIntent.getIntExtra(CustomConstants.INTENT_STATUS, 0);
 
         showImage();
     }
@@ -77,8 +79,12 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess() {
                         statusForLink = CustomConstants.STATUS_DOWNLOADED;
-                        saveImage();
-                        deleteLink(id);
+                        if (oldStatusForLink != statusForLink){
+                            updateLink();
+                        }else {
+                            saveImage();
+                            deleteLink(id);
+                        }
                     }
 
                     @Override
