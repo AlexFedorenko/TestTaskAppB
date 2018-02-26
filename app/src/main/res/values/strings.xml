@@ -6,4 +6,5 @@
     <string name="link_saved_main_activity">Link Saved</string>
     <string name="save_image_txt">Image saved in</string>
     <string name="sd_card_error">Error, SD card not found</string>
+    <string name="image_delete_msg">Image link deleted</string>
 </resources>

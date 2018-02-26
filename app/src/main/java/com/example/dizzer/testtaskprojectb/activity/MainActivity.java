@@ -16,6 +16,7 @@ import android.widget.Toast;
 import com.example.dizzer.testtaskprojectb.R;
 import com.example.dizzer.testtaskprojectb.constants.ConstantsForDB;
 import com.example.dizzer.testtaskprojectb.constants.CustomConstants;
+import com.example.dizzer.testtaskprojectb.service.DeleteService;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -139,7 +140,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void deleteLink(long id) {
-        getContentResolver().delete(ConstantsForDB.CONTENT_URI_IMAGES, "_id = " + id, null);
+        Intent intent = new Intent(MainActivity.this, DeleteService.class);
+        intent.putExtra(CustomConstants.INTENT_ID, id);
+        startService(intent);
     }
 
     private void closeApp() {
