@@ -3,7 +3,11 @@ package com.example.dizzer.testtaskprojectb.activity;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.CountDownTimer;
+import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ImageView;
@@ -14,6 +18,10 @@ import com.example.dizzer.testtaskprojectb.constants.ConstantsForDB;
 import com.example.dizzer.testtaskprojectb.constants.CustomConstants;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -94,11 +102,34 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveImage() {
+        if (Environment.getExternalStorageState().equals(
+                Environment.MEDIA_MOUNTED)) {
+            String filename = Uri.parse(imageLink).getLastPathSegment();
 
+            Bitmap bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
+            File path = new File(Environment.getExternalStorageDirectory().getPath() + "/" + "BIGDIG/test/B");
+            path.mkdirs();
+            File sdFile = new File(path, filename);
+            try {
+                FileOutputStream fileOutputStream = new FileOutputStream(sdFile);
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, fileOutputStream);
+                fileOutputStream.close();
+
+                if (sdFile.exists()) {
+                    Toast.makeText(this, getString(R.string.save_image_txt) + sdFile.toString(), Toast.LENGTH_LONG).show();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } else
+            Toast.makeText(MainActivity.this, getString(R.string.sd_card_error), Toast.LENGTH_LONG).show();
     }
 
     private void updateLink() {
-
+        ContentValues contentValues = new ContentValues();
+        contentValues.put(ConstantsForDB.IMAGE_STATUS, statusForLink);
+        contentValues.put(ConstantsForDB.IMAGE_TIME, imageTime);
+        getContentResolver().update(ConstantsForDB.CONTENT_URI_IMAGES, contentValues, "_id = " + id, null);
     }
 
     private void deleteLink(long id) {

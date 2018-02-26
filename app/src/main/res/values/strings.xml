@@ -4,4 +4,6 @@
     <string name="main_activity_seconds_text">seconds</string>
     <string name="title_for_dialog">Application B</string>
     <string name="link_saved_main_activity">Link Saved</string>
+    <string name="save_image_txt">Image saved in</string>
+    <string name="sd_card_error">Error, SD card not found</string>
 </resources>
